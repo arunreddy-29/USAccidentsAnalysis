@@ -10,6 +10,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CovidTrendDto {
-    private LocalDate fromDate;
-    private LocalDate toDate;
+    private String fromDate;
+    private String toDate;
 }

@@ -15,7 +15,7 @@ public class USAccidentController {
 
     private final USAccidentService usAccidentService;
 
-    public USAccidentController( USAccidentService usAccidentService) {
+    public USAccidentController(USAccidentService usAccidentService) {
         this.usAccidentService = usAccidentService;
     }
 
@@ -29,19 +29,29 @@ public class USAccidentController {
             @RequestParam("fromAge") int fromAge,
             @RequestParam("toAge") int toAge,
             @RequestParam("timeOfDay") int timeOfDay,
-            @RequestParam("fromDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fromDate,
-            @RequestParam("toDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate toDate) {
+            @RequestParam("fromDate") String fromDate,
+            @RequestParam("toDate") String toDate) {
 
         AgeGroupTrendDto ageGroupTrendDto = new AgeGroupTrendDto(fromAge, toAge, timeOfDay, fromDate, toDate);
         return usAccidentService.getAgeGroupTrend(ageGroupTrendDto);
+    }
+
+    @GetMapping("/carTypeTrend/carMake")
+    public List<String> getCarMake() {
+        return usAccidentService.getCarMake();
+    }
+
+    @GetMapping("/carTypeTrend/carModel")
+    public List<String> getCarModel(@RequestParam("carMake") String carMake) {
+        return usAccidentService.getCarModel(carMake);
     }
 
     @GetMapping("/carTypeTrend")
     public List<AccidentResultDto> getCarTypeTrend(
             @RequestParam("carMake") String carMake,
             @RequestParam("carModel") String carModel,
-            @RequestParam("fromDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fromDate,
-            @RequestParam("toDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate toDate) {
+            @RequestParam("fromDate") String fromDate,
+            @RequestParam("toDate") String toDate) {
 
         CarTypeTrendDto carTypeTrendDto = new CarTypeTrendDto(carMake, carModel, fromDate, toDate);
         return usAccidentService.getCarTypeTrend(carTypeTrendDto);
@@ -52,11 +62,12 @@ public class USAccidentController {
         return usAccidentService.getMarylandViolations();
     }
 
+
     @GetMapping("/marylandViolationTrend")
     public List<MarylandViolationResultDto> getMarylandViolationTrend(
             @RequestParam String violation,
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fromDate,
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate toDate) {
+            @RequestParam String fromDate,
+            @RequestParam String toDate) {
 
         MarylandViolationTrendDto marylandViolationTrendDto = new MarylandViolationTrendDto(violation, fromDate, toDate);
         return usAccidentService.getMarylandViolationTrend(marylandViolationTrendDto);
@@ -64,8 +75,8 @@ public class USAccidentController {
 
     @GetMapping("/covidTrend")
     public List<CovidTrendResultDto> getCovidTrend(
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fromDate,
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate toDate) {
+            @RequestParam String fromDate,
+            @RequestParam String toDate) {
 
         CovidTrendDto covidTrendDto = new CovidTrendDto(fromDate, toDate);
         return usAccidentService.getCovidTrend(covidTrendDto);

@@ -12,6 +12,6 @@ import java.time.LocalDate;
 public class MarylandViolationTrendDto {
 
     private String violation;
-    private LocalDate fromDate;
-    private LocalDate toDate;
+    private String fromDate;
+    private String toDate;
 }

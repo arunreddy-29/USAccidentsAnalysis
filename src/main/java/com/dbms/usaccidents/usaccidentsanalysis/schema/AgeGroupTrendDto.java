@@ -14,6 +14,6 @@ public class AgeGroupTrendDto {
     private int fromAge;
     private int toAge;
     private int timeOfDay;
-    private LocalDate fromDate;
-    private LocalDate toDate;
+    private String fromDate;
+    private String toDate;
 }

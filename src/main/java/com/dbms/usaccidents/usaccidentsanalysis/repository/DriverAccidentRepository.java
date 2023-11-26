@@ -11,26 +11,28 @@ import org.springframework.data.repository.query.Param;
 import java.time.LocalDate;
 import java.util.List;
 
-@Repository
-public interface DriverAccidentRepository extends JpaRepository<DriverAccidentEntity, DriverAccidentId> {
+public interface DriverAccidentRepository extends JpaRepository<DriverAccidentEntity, String> {
 
-    @Query("SELECT CONCAT(LPAD(da.accidentEntity.month, 2, '0'), '/', da.accidentEntity.year) AS monthYear, " +
+    @Query("SELECT CONCAT(" +
+            "CASE WHEN da.accidentEntity.month < 10 THEN '0' ELSE '' END, da.accidentEntity.month, '/', da.accidentEntity.year) AS monthYear, " +
             "COUNT(da) as accidentCount " +
             "FROM DriverAccidentEntity da " +
             "WHERE da.driverEntity.age BETWEEN :fromAge AND :toAge " +
             "AND FUNCTION('HOUR', da.accidentEntity.timestamp) = :accidentHour " +
-            "AND (CAST(CONCAT(da.accidentEntity.year, '-', LPAD(CAST(da.accidentEntity.month AS CHAR), 2, '0'), '-', '01') AS LocalDate) BETWEEN :fromDate AND :toDate) " +
-            "GROUP BY CONCAT(LPAD(da.accidentEntity.month, 2, '0'), '/', da.accidentEntity.year)" +
+            "AND (CAST(CONCAT(da.accidentEntity.year, '-', " +
+            "CASE WHEN da.accidentEntity.month < 10 THEN '0' ELSE '' END, da.accidentEntity.month, '-', '01') AS LocalDate) BETWEEN :fromDate AND :toDate) " +
+            "GROUP BY CONCAT(" +
+            "CASE WHEN da.accidentEntity.month < 10 THEN '0' ELSE '' END, da.accidentEntity.month, '/', da.accidentEntity.year) " +
             "ORDER BY da.accidentEntity.year, da.accidentEntity.month")
     List<AccidentResultDto> countAccidentsByAgeAndSpecificHour(
             @Param("fromAge") Integer fromAge,
             @Param("toAge") Integer toAge,
             @Param("accidentHour") Integer accidentHour,
-            @Param("fromDate") LocalDate fromDate,
-            @Param("toDate") LocalDate toDate);
+            @Param("fromDate") String fromDate,
+            @Param("toDate") String toDate);
 
     @Query("SELECT CONCAT(" +
-            "LPAD(CAST(acc.month AS CHAR), 2, '0'), '/', acc.year) AS monthYear, " +
+            "CASE WHEN acc.month < 10 THEN '0' ELSE '' END, acc.month, '/', acc.year) AS monthYear, " +
             "v.manufacturer AS make, v.model AS model, COUNT(acc) AS accidentCount " +
             "FROM DriverAccidentEntity da " +
             "JOIN da.accidentEntity acc " +
@@ -38,15 +40,16 @@ public interface DriverAccidentRepository extends JpaRepository<DriverAccidentEn
             "JOIN d.vehicles v " +
             "WHERE v.manufacturer = :make " +
             "AND v.model = :model " +
-            "AND (CAST(CONCAT(acc.year, '-', LPAD(CAST(acc.month AS CHAR), 2, '0'), '-', '01') AS LocalDate) BETWEEN :fromDate AND :toDate) " +
-            "GROUP BY CONCAT(LPAD(acc.month, 2, '0'), '/', acc.year)" +
+            "AND (CAST(CONCAT(acc.year, '-', " +
+            "CASE WHEN acc.month < 10 THEN '0' ELSE '' END, acc.month, '-', '01') AS LocalDate) BETWEEN :fromDate AND :toDate) " +
+            "GROUP BY CONCAT(" +
+            "CASE WHEN acc.month < 10 THEN '0' ELSE '' END, acc.month, '/', acc.year) " +
             "ORDER BY acc.year, acc.month")
     List<AccidentResultDto> countAccidentsByMakeModelAndMonthYear(
             @Param("make") String make,
             @Param("model") String model,
-            @Param("fromDate") LocalDate fromDate,
-            @Param("toDate") LocalDate toDate);
-
+            @Param("fromDate") String fromDate,
+            @Param("toDate") String toDate);
 
 //    @Query("SELECT CONCAT(" +
 //            "LPAD(CAST(acc.month AS CHAR), 2, '0'), '/', acc.year) AS monthYear, " +
@@ -66,5 +69,3 @@ public interface DriverAccidentRepository extends JpaRepository<DriverAccidentEn
 //            @Param("fromDate") LocalDate fromDate,
 //            @Param("toDate") LocalDate toDate);
 }
-
-

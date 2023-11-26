@@ -45,8 +45,8 @@ public class WeatherTrendController {
             @RequestParam("location") LocationType location,
             @RequestParam("locationValue") String locationValue,
             @RequestParam("weatherCondition") String weatherCondition,
-            @RequestParam("fromDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fromDate,
-            @RequestParam("toDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate toDate) {
+            @RequestParam("fromDate") String fromDate,
+            @RequestParam("toDate") String toDate) {
         WeatherTrendDto weatherTrendDto = new WeatherTrendDto(location, locationValue, weatherCondition, fromDate, toDate);
         return weatherTrendService.getWeatherTrend(weatherTrendDto);
     }

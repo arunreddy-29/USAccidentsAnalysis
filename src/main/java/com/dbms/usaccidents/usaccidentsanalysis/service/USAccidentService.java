@@ -24,7 +24,7 @@ public class USAccidentService {
     private final DriverRepository driverRepository;
 
 
-    public USAccidentService(DriverAccidentRepository driverAccidentRepository, TrafficViolationRepository trafficViolationRepository, AccidentRepository accidentRepository, LocationRepository locationRepository, VehicleRepository vehicleRepository, WeatherRepository weatherRepository, DriverRepository driverRepository) {
+    public USAccidentService(TrafficViolationRepository trafficViolationRepository, AccidentRepository accidentRepository, LocationRepository locationRepository, VehicleRepository vehicleRepository, WeatherRepository weatherRepository, DriverRepository driverRepository, DriverAccidentRepository driverAccidentRepository) {
         this.driverAccidentRepository = driverAccidentRepository;
         this.trafficViolationRepository = trafficViolationRepository;
         this.accidentRepository = accidentRepository;
@@ -48,6 +48,14 @@ public class USAccidentService {
                 ageGroupTrendDto.getToDate());
     }
 
+    public List<String> getCarMake() {
+        return vehicleRepository.findDistinctCarMake();
+    }
+
+    public List<String> getCarModel(String carMake) {
+        return vehicleRepository.findDistinctModelsByMake(carMake);
+    }
+
     public List<AccidentResultDto> getCarTypeTrend(CarTypeTrendDto carTypeTrendDto) {
         return driverAccidentRepository.countAccidentsByMakeModelAndMonthYear(
                 carTypeTrendDto.getCarMake(),
@@ -62,7 +70,7 @@ public class USAccidentService {
 
     public List<MarylandViolationResultDto> getMarylandViolationTrend(MarylandViolationTrendDto marylandViolationTrendDto) {
 
-        List<AccidentResultDto> dto1 =  accidentRepository.countAccidentsInMDForViolationType(
+        List<AccidentResultDto> dto1 = accidentRepository.countAccidentsInMDForViolationType(
                 marylandViolationTrendDto.getViolation(),
                 marylandViolationTrendDto.getFromDate(),
                 marylandViolationTrendDto.getToDate());
@@ -91,7 +99,7 @@ public class USAccidentService {
 
     public List<CovidTrendResultDto> getCovidTrend(CovidTrendDto covidTrendDto) {
 
-        List<AccidentResultDto> dto1 = accidentRepository.countAccidentsInMDByMonthYear(
+        List<AccidentResultDto> dto1 = accidentRepository.countAccidentsByMonthYear(
                 covidTrendDto.getFromDate(),
                 covidTrendDto.getToDate());
 

@@ -14,7 +14,7 @@ public class WeatherTrendDto {
     private LocationType location;
     private String locationValue;
     private String weatherCondition;
-    private LocalDate fromDate;
-    private LocalDate toDate;
+    private String fromDate;
+    private String toDate;
 
 }

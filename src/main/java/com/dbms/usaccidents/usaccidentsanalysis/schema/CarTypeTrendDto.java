@@ -13,6 +13,6 @@ public class CarTypeTrendDto {
 
     private String carMake;
     private String carModel;
-    private LocalDate fromDate;
-    private LocalDate toDate;
+    private String fromDate;
+    private String toDate;
 }

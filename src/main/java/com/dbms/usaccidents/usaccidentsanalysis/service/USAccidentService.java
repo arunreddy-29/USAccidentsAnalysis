@@ -21,29 +21,51 @@ public class USAccidentService {
     private final WeatherRepository weatherRepository;
 
     private final DriverRepository driverRepository;
+    private final VehicleAccidentRepository vehicleAccidentRepository;
 
 
-    public USAccidentService(TrafficViolationRepository trafficViolationRepository, AccidentRepository accidentRepository, LocationRepository locationRepository, VehicleRepository vehicleRepository, WeatherRepository weatherRepository, DriverRepository driverRepository) {
+    public USAccidentService(TrafficViolationRepository trafficViolationRepository, AccidentRepository accidentRepository, LocationRepository locationRepository, VehicleRepository vehicleRepository, WeatherRepository weatherRepository, DriverRepository driverRepository, VehicleAccidentRepository vehicleAccidentRepository) {
         this.trafficViolationRepository = trafficViolationRepository;
         this.accidentRepository = accidentRepository;
         this.locationRepository = locationRepository;
         this.vehicleRepository = vehicleRepository;
         this.weatherRepository = weatherRepository;
         this.driverRepository = driverRepository;
+        this.vehicleAccidentRepository = vehicleAccidentRepository;
     }
 
     public Long getTotalRows() {
-        return trafficViolationRepository.count() + accidentRepository.count() + locationRepository.count() + vehicleRepository.count() + weatherRepository.count() + driverRepository.count();
+        return trafficViolationRepository.count() + accidentRepository.count() + locationRepository.count() + vehicleRepository.count() + weatherRepository.count() + driverRepository.count() + vehicleAccidentRepository.count();
     }
 
-    public List<AccidentResultDto> getAgeGroupTrend(AgeGroupTrendDto ageGroupTrendDto) {
+    public AccidentResultDto getAgeGroupTrend(AgeGroupTrendDto ageGroupTrendDto) {
 
-        return accidentRepository.countAccidentsByAgeAndTimePeriod(
+        List<Object[]> dto1 = accidentRepository.countAccidentsByAgeAndTimePeriod(
                 ageGroupTrendDto.getFromAge(),
                 ageGroupTrendDto.getToAge(),
                 ageGroupTrendDto.getTimeOfDay(),
                 ageGroupTrendDto.getFromDate(),
                 ageGroupTrendDto.getToDate());
+
+        return createAccidentResult(dto1);
+    }
+
+    private AccidentResultDto createAccidentResult(List<Object[]> dto1) {
+        AccidentResultDto accidentResultDto = new AccidentResultDto();
+        List<String> monthYear = new ArrayList<>();
+        List<Integer> accidentCount = new ArrayList<>();
+
+        for (int i = 0; i < dto1.size(); i++) {
+            Object[] resultDto1 = dto1.get(i);
+
+            monthYear.add(resultDto1[0].toString());
+            accidentCount.add(Integer.valueOf(resultDto1[1].toString()));
+
+        }
+        accidentResultDto.setMonthYear(monthYear);
+        accidentResultDto.setAccidentCount(accidentCount);
+
+        return accidentResultDto;
     }
 
     public List<String> getCarMake() {
@@ -54,73 +76,80 @@ public class USAccidentService {
         return vehicleRepository.findDistinctModelsByMake(carMake);
     }
 
-    public List<AccidentResultDto> getCarTypeTrend(CarTypeTrendDto carTypeTrendDto) {
-        return accidentRepository.findAccidentCountsByManufacturerAndModelAndYear(
+    public AccidentResultDto getCarTypeTrend(CarTypeTrendDto carTypeTrendDto) {
+
+        List<Object[]> dto1 = accidentRepository.findAccidentCountsByManufacturerAndModel(
                 carTypeTrendDto.getCarMake(),
                 carTypeTrendDto.getCarModel(),
                 carTypeTrendDto.getFromDate(),
                 carTypeTrendDto.getToDate());
+
+        return createAccidentResult(dto1);
     }
 
     public List<String> getMarylandViolations() {
         return trafficViolationRepository.findDistinctViolationType();
     }
 
-    public List<MarylandViolationResultDto> getMarylandViolationTrend(MarylandViolationTrendDto marylandViolationTrendDto) {
+    public MarylandViolationResultDto getMarylandViolationTrend(MarylandViolationTrendDto marylandViolationTrendDto) {
 
-        List<AccidentResultDto> dto1 = accidentRepository.countAccidentsInMDForViolationType(
+        List<Object[]> dto1 = accidentRepository.countAccidentsInMDForViolationType(
                 marylandViolationTrendDto.getViolation(),
                 marylandViolationTrendDto.getFromDate(),
                 marylandViolationTrendDto.getToDate());
 
-        List<AccidentResultDto> dto2 = accidentRepository.countAccidentsInMDByMonthYear(
+        List<Object[]> dto2 = accidentRepository.countAccidentsInMDByMonthYear(
                 marylandViolationTrendDto.getFromDate(),
                 marylandViolationTrendDto.getToDate());
 
-        List<MarylandViolationResultDto> combinedResults = new ArrayList<>();
+        MarylandViolationResultDto marylandViolationResultDto = new MarylandViolationResultDto();
+
+        List<String> monthYear = new ArrayList<>();
+        List<Integer> countFromMaryland = new ArrayList<>();
+        List<Integer> countFromAccident = new ArrayList<>();
 
         for (int i = 0; i < dto1.size(); i++) {
-            AccidentResultDto resultDto1 = dto1.get(i);
-            AccidentResultDto resultDto2 = dto2.get(i);
+            Object[] resultDto1 = dto1.get(i);
+            Object[] resultDto2 = dto2.get(i);
 
-            MarylandViolationResultDto combinedDto = new MarylandViolationResultDto(
-                    resultDto1.getMonthYear(),
-                    resultDto1.getAccidentCount(),
-                    resultDto2.getAccidentCount()
-            );
-
-            combinedResults.add(combinedDto);
+            monthYear.add(resultDto1[0].toString());
+            countFromMaryland.add(Integer.valueOf(resultDto1[1].toString()));
+            countFromAccident.add(Integer.valueOf(resultDto2[1].toString()));
         }
 
-        return combinedResults;
+        marylandViolationResultDto.setMonthYear(monthYear);
+        marylandViolationResultDto.setCountFromMaryland(countFromMaryland);
+        marylandViolationResultDto.setCountFromAccident(countFromAccident);
+
+        return marylandViolationResultDto;
     }
 
     public List<CovidTrendResultDto> getCovidTrend(CovidTrendDto covidTrendDto) {
 
-        List<AccidentResultDto> dto1 = accidentRepository.countAccidentsByMonthYear(
+        List<Object[]> dto1 = accidentRepository.countAccidentsByMonthYear(
                 covidTrendDto.getFromDate(),
                 covidTrendDto.getToDate());
 
-        List<AccidentResultDto> dto2 = accidentRepository.countCovidCasesByMonthYear(
+        List<Object[]> dto2 = accidentRepository.countCovidCasesByMonthYear(
                 covidTrendDto.getFromDate(),
                 covidTrendDto.getToDate());
 
-        List<CovidTrendResultDto> combinedResults = new ArrayList<>();
+//        List<CovidTrendResultDto> combinedResults = new ArrayList<>();
+//
+//        for (int i = 0; i < dto1.size(); i++) {
+//            Object[] resultDto1 = dto1.get(i);
+//            Object[] resultDto2 = dto2.get(i);
+//
+//            CovidTrendResultDto combinedDto = new CovidTrendResultDto(
+//                    resultDto1.getMonthYear(),
+//                    resultDto1.getAccidentCount(),
+//                    resultDto2.getAccidentCount()
+//            );
+//
+//            combinedResults.add(combinedDto);
+//        }
 
-        for (int i = 0; i < dto1.size(); i++) {
-            AccidentResultDto resultDto1 = dto1.get(i);
-            AccidentResultDto resultDto2 = dto2.get(i);
-
-            CovidTrendResultDto combinedDto = new CovidTrendResultDto(
-                    resultDto1.getMonthYear(),
-                    resultDto1.getAccidentCount(),
-                    resultDto2.getAccidentCount()
-            );
-
-            combinedResults.add(combinedDto);
-        }
-
-        return combinedResults;
+        return null;
     }
 
 }

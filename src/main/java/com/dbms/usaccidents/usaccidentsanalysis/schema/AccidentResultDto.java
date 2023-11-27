@@ -4,10 +4,12 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class AccidentResultDto {
-    private String monthYear;
-    private Long accidentCount;
+    private List<String> monthYear;
+    private List<Integer> accidentCount;
 }

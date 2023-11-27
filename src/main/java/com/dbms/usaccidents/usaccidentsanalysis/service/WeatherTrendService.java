@@ -8,6 +8,7 @@ import com.dbms.usaccidents.usaccidentsanalysis.schema.LocationType;
 import com.dbms.usaccidents.usaccidentsanalysis.schema.WeatherTrendDto;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.dbms.usaccidents.usaccidentsanalysis.schema.LocationType.*;
@@ -39,7 +40,7 @@ public class WeatherTrendService {
         return weatherRepository.findDistinctWeatherCondition();
     }
 
-    public List<AccidentResultDto> getWeatherTrend(WeatherTrendDto weatherTrendDto) {
+    public AccidentResultDto getWeatherTrend(WeatherTrendDto weatherTrendDto) {
         String state = null;
         String city = null;
         String zipcode = null;
@@ -52,13 +53,27 @@ public class WeatherTrendService {
             zipcode = weatherTrendDto.getLocationValue();
         }
 
-        return accidentRepository.countAccidentsByLocationAndWeatherConditionAndMonthYearRange(
+        List<Object[]> dto1 = accidentRepository.countAccidentsByLocationAndWeatherConditionAndMonthYearRange(
                 city,
                 state,
                 zipcode,
                 weatherTrendDto.getWeatherCondition(),
                 weatherTrendDto.getFromDate(),
-                weatherTrendDto.getToDate()
-        );
+                weatherTrendDto.getToDate());
+        AccidentResultDto accidentResultDto = new AccidentResultDto();
+        List<String> monthYear = new ArrayList<>();
+        List<Integer> accidentCount = new ArrayList<>();
+
+        for (int i = 0; i < dto1.size(); i++) {
+            Object[] resultDto1 = dto1.get(i);
+
+            monthYear.add(resultDto1[0].toString());
+            accidentCount.add(Integer.valueOf(resultDto1[1].toString()));
+
+        }
+        accidentResultDto.setMonthYear(monthYear);
+        accidentResultDto.setAccidentCount(accidentCount);
+
+        return accidentResultDto;
     }
 }

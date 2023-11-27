@@ -4,12 +4,14 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class MarylandViolationResultDto {
 
-    private String monthYear;
-    private Long countFromMaryland;
-    private Long countFromAccident;
+    private List<String> monthYear;
+    private List<Integer> countFromMaryland;
+    private List<Integer> countFromAccident;
 }

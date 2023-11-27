@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface AccidentRepository extends JpaRepository<AccidentEntity, Long> {
@@ -16,18 +17,14 @@ public interface AccidentRepository extends JpaRepository<AccidentEntity, Long> 
             "COUNT(t) AS countFromMaryland " +
             "FROM TrafficViolationEntity t " +
             "WHERE t.violationtype = :violationType " +
-            "AND t.accident = 'Yes' " +
-            "AND t.year >= YEAR(:fromDate) " +
-            "AND t.month >= MONTH(:fromDate) " +
-            "AND t.year <= YEAR(:toDate) " +
-            "AND t.month <= MONTH(:toDate) " +
-            "GROUP BY CONCAT(" +
-            "CASE WHEN t.month < 10 THEN '0' ELSE '' END, t.month, '/', t.year) " +
+            "AND (t.year > YEAR(:fromDate) OR (t.year = YEAR(:fromDate) AND t.month >= MONTH(:fromDate))) " +
+            "AND (t.year < YEAR(:toDate) OR (t.year = YEAR(:toDate) AND t.month <= MONTH(:toDate))) " +
+            "GROUP BY t.year, t.month " +
             "ORDER BY t.year, t.month")
-    List<AccidentResultDto> countAccidentsInMDForViolationType(
+    List<Object[]> countAccidentsInMDForViolationType(
             @Param("violationType") String violationType,
-            @Param("fromDate") String fromDate,
-            @Param("toDate") String toDate);
+            @Param("fromDate") LocalDateTime fromDate,
+            @Param("toDate") LocalDateTime toDate);
 
     @Query("SELECT CONCAT(" +
             "CASE WHEN a.month < 10 THEN '0' ELSE '' END, a.month, '/', a.year) AS monthYear, " +
@@ -35,114 +32,99 @@ public interface AccidentRepository extends JpaRepository<AccidentEntity, Long> 
             "FROM AccidentEntity a " +
             "JOIN a.location l " +
             "WHERE l.state = 'MD' " +
-            "AND a.year >= YEAR(:fromDate) " +
-            "AND a.month >= MONTH(:fromDate) " +
-            "AND a.year <= YEAR(:toDate) " +
-            "AND a.month <= MONTH(:toDate) " +
-            "GROUP BY CONCAT(" +
-            "CASE WHEN a.month < 10 THEN '0' ELSE '' END, a.month, '/', a.year) " +
+            "AND (a.year > YEAR(:fromDate) OR (a.year = YEAR(:fromDate) AND a.month >= MONTH(:fromDate))) " +
+            "AND (a.year < YEAR(:toDate) OR (a.year = YEAR(:toDate) AND a.month <= MONTH(:toDate))) " +
+            "GROUP BY a.year, a.month " +
             "ORDER BY a.year, a.month")
-    List<AccidentResultDto> countAccidentsInMDByMonthYear(
-            @Param("fromDate") String fromDate,
-            @Param("toDate") String toDate);
+    List<Object[]> countAccidentsInMDByMonthYear(
+            @Param("fromDate") LocalDateTime fromDate,
+            @Param("toDate") LocalDateTime toDate);
 
     @Query("SELECT CONCAT(" +
             "CASE WHEN a.month < 10 THEN '0' ELSE '' END, a.month, '/', a.year) AS monthYear, " +
             "COUNT(a) AS accidentCount " +
             "FROM AccidentEntity a " +
             "JOIN a.location l " +
-            "WHERE a.year >= YEAR(:fromDate) " +
-            "AND a.month >= MONTH(:fromDate) " +
-            "AND a.year <= YEAR(:toDate) " +
-            "AND a.month <= MONTH(:toDate) " +
-            "GROUP BY CONCAT(" +
-            "CASE WHEN a.month < 10 THEN '0' ELSE '' END, a.month, '/', a.year) " +
+            "WHERE (a.year > YEAR(:fromDate) OR (a.year = YEAR(:fromDate) AND a.month >= MONTH(:fromDate))) " +
+            "AND (a.year < YEAR(:toDate) OR (a.year = YEAR(:toDate) AND a.month <= MONTH(:toDate))) " +
+            "GROUP BY a.year, a.month " +
             "ORDER BY a.year, a.month")
-    List<AccidentResultDto> countAccidentsByMonthYear(
-            @Param("fromDate") String fromDate,
-            @Param("toDate") String toDate);
+    List<Object[]> countAccidentsByMonthYear(
+            @Param("fromDate") LocalDateTime fromDate,
+            @Param("toDate") LocalDateTime toDate);
 
     @Query("SELECT CONCAT(" +
             "CASE WHEN c.month < 10 THEN '0' ELSE '' END, c.month, '/', c.year) AS monthYear, " +
             "SUM(c.cases) AS covidCaseCount " +
             "FROM CovidEntity c " +
-            "WHERE c.year >= YEAR(:fromDate) " +
-            "AND c.month >= MONTH(:fromDate) " +
-            "AND c.day >= DAY(:fromDate) " +
-            "AND c.year <= YEAR(:toDate) " +
-            "AND c.month <= MONTH(:toDate) " +
+            "WHERE (c.year > YEAR(:fromDate) OR (c.year = YEAR(:fromDate) AND c.month >= MONTH(:fromDate))) " +
+            "AND (c.year < YEAR(:toDate) OR (c.year = YEAR(:toDate) AND c.month <= MONTH(:toDate))) " +
             "AND c.day <= DAY(:toDate) " +
-            "GROUP BY CONCAT(" +
-            "CASE WHEN c.month < 10 THEN '0' ELSE '' END, c.month, '/', c.year) " +
+            "GROUP BY c.year, c.month " +
             "ORDER BY c.year, c.month")
-    List<AccidentResultDto> countCovidCasesByMonthYear(
-            @Param("fromDate") String fromDate,
-            @Param("toDate") String toDate);
+    List<Object[]> countCovidCasesByMonthYear(
+            @Param("fromDate") LocalDateTime fromDate,
+            @Param("toDate") LocalDateTime toDate);
 
     @Query("SELECT CONCAT(" +
             "CASE WHEN a.month < 10 THEN '0' ELSE '' END, a.month, '/', a.year) AS monthYear, COUNT(a) as accidentCount " +
             "FROM AccidentEntity a " +
             "JOIN a.location l " +
             "JOIN a.weather w " +
-            "WHERE a.year >= YEAR(:fromDate) " +
-            "AND a.month >= MONTH(:fromDate) " +
-            "AND a.year <= YEAR(:toDate) " +
-            "AND a.month <= MONTH(:toDate) " +
+            "WHERE (a.year > YEAR(:fromDate) OR (a.year = YEAR(:fromDate) AND a.month >= MONTH(:fromDate))) " +
+            "AND (a.year < YEAR(:toDate) OR (a.year = YEAR(:toDate) AND a.month <= MONTH(:toDate))) " +
             "AND (:weatherCondition IS NULL OR w.weathercondition LIKE CONCAT('%', :weatherCondition, '%')) " +
             "AND (:city IS NULL OR l.city = :city) " +
             "AND (:state IS NULL OR l.state = :state) " +
             "AND (:zipCode IS NULL OR l.zipcode = :zipCode) " +
-            "GROUP BY CONCAT(" +
-            "CASE WHEN a.month < 10 THEN '0' ELSE '' END, a.month, '/', a.year) " +
+            "GROUP BY a.year, a.month " +
             "ORDER BY a.year, a.month")
-    List<AccidentResultDto> countAccidentsByLocationAndWeatherConditionAndMonthYearRange(
+    List<Object[]> countAccidentsByLocationAndWeatherConditionAndMonthYearRange(
             @Param("city") String city,
             @Param("state") String state,
             @Param("zipCode") String zipCode,
             @Param("weatherCondition") String weatherCondition,
-            @Param("fromDate") String fromDate,
-            @Param("toDate") String toDate);
+            @Param("fromDate") LocalDateTime fromDate,
+            @Param("toDate") LocalDateTime toDate);
 
 
-    @Query("SELECT CONCAT(" +
-            "CASE WHEN EXTRACT(MONTH FROM a.timestamp) < 10 THEN '0' ELSE '' END, EXTRACT(MONTH FROM a.timestamp), '/', EXTRACT(YEAR FROM a.timestamp)) AS monthYear, COUNT(a) as accidentCount " +
+    @Query("SELECT " +
+            "(CASE WHEN a.month < 10 THEN '0' ELSE '' END || a.month || '/' || a.year) AS monthYear, COUNT(a) as accidentCount " +
             "FROM AccidentEntity a " +
             "JOIN VehicleAccidentEntity va ON va.accident = a " +
             "JOIN VehicleEntity v ON va.vehicle = v " +
             "JOIN DriverEntity d ON v.driver = d " +
-            "WHERE EXTRACT(YEAR FROM a.timestamp) >= YEAR(:fromDate) " +
-            "AND EXTRACT(MONTH FROM a.timestamp) >= MONTH(:fromDate) " +
-            "AND EXTRACT(YEAR FROM a.timestamp) <= YEAR(:toDate) " +
-            "AND EXTRACT(MONTH FROM a.timestamp) <= MONTH(:toDate) " +
+            "WHERE (a.year > YEAR(:fromDate) OR (a.year = YEAR(:fromDate) AND a.month >= MONTH(:fromDate))) " +
+            "AND (a.year < YEAR(:toDate) OR (a.year = YEAR(:toDate) AND a.month <= MONTH(:toDate))) " +
             "AND d.age BETWEEN :startAge AND :endAge " +
             "AND EXTRACT(HOUR FROM a.timestamp) = :hour " +
-            "GROUP BY CONCAT(" +
-            "CASE WHEN EXTRACT(MONTH FROM a.timestamp) < 10 THEN '0' ELSE '' END, EXTRACT(MONTH FROM a.timestamp), '/', EXTRACT(YEAR FROM a.timestamp)) " +
-            "ORDER BY EXTRACT(YEAR FROM a.timestamp), EXTRACT(MONTH FROM a.timestamp)")
-    List<AccidentResultDto> countAccidentsByAgeAndTimePeriod(
+            "GROUP BY a.month, a.year " +
+            "ORDER BY a.year, a.month")
+    List<Object[]> countAccidentsByAgeAndTimePeriod(
             @Param("startAge") int startAge,
             @Param("endAge") int endAge,
             @Param("hour") int hour,
-            @Param("fromDate") String fromDate,
-            @Param("toDate") String toDate);
+            @Param("fromDate") LocalDateTime fromDate,
+            @Param("toDate") LocalDateTime toDate);
 
-    @Query("SELECT v.manufacturer, v.model, FUNCTION('YEAR', a.timestamp) as year, COUNT(a) " +
-            "FROM VehicleEntity v " +
-            "JOIN VehicleAccidentEntity va ON va.vehicle.id = v.id " +
-            "JOIN AccidentEntity a ON va.accident.id = a.id " +
+
+
+    @Query("SELECT " +
+            "(CASE WHEN a.month < 10 THEN '0' ELSE '' END || a.month || '/' || a.year) AS monthYear, COUNT(a) as accidentCount " +
+            "FROM AccidentEntity a " +
+            "JOIN VehicleAccidentEntity va ON va.accident = a " +
+            "JOIN VehicleEntity v ON va.vehicle = v " +
             "WHERE v.manufacturer = :manufacturer " +
             "AND v.model = :model " +
-            "AND a.timestamp BETWEEN :fromDate AND :toDate " +
-            "GROUP BY v.manufacturer, v.model, FUNCTION('YEAR', a.timestamp) " +
-            "ORDER BY a.year")
-    List<AccidentResultDto> findAccidentCountsByManufacturerAndModelAndYear(
+            "AND (a.year > YEAR(:fromDate) OR (a.year = YEAR(:fromDate) AND a.month >= MONTH(:fromDate))) " +
+            "AND (a.year < YEAR(:toDate) OR (a.year = YEAR(:toDate) AND a.month <= MONTH(:toDate))) " +
+            "GROUP BY a.month, a.year  " +
+            "ORDER BY a.month, a.year ")
+    List<Object[]> findAccidentCountsByManufacturerAndModel(
             @Param("manufacturer") String manufacturer,
             @Param("model") String model,
-            @Param("fromDate") String fromDate,
-            @Param("toDate") String toDate);
-
-
-
+            @Param("fromDate") LocalDateTime fromDate,
+            @Param("toDate") LocalDateTime toDate);
 
 
 }

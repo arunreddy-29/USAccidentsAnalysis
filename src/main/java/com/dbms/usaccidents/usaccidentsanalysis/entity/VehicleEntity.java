@@ -12,7 +12,7 @@ public class VehicleEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;//string
+    private Integer id;
     private String model;
     private String manufacturer;
 

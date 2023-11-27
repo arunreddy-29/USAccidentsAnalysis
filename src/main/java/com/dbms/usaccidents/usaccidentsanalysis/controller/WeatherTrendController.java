@@ -7,6 +7,7 @@ import com.dbms.usaccidents.usaccidentsanalysis.service.WeatherTrendService;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;
@@ -41,15 +42,16 @@ public class WeatherTrendController {
     }
 
     @GetMapping
-    public List<AccidentResultDto> getWeatherTrend(
+    public AccidentResultDto getWeatherTrend(
             @RequestParam("location") LocationType location,
             @RequestParam("locationValue") String locationValue,
             @RequestParam("weatherCondition") String weatherCondition,
             @RequestParam("fromDate") LocalDate fromDate,
             @RequestParam("toDate") LocalDate toDate) {
-        String fDate = fromDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-        String tDate = toDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-        WeatherTrendDto weatherTrendDto = new WeatherTrendDto(location, locationValue, weatherCondition, fDate, tDate);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        LocalDateTime fromDatetime = LocalDateTime.parse(fromDate + " 00:00:00", formatter);
+        LocalDateTime toDatetime = LocalDateTime.parse(toDate + " 23:59:59", formatter);
+        WeatherTrendDto weatherTrendDto = new WeatherTrendDto(location, locationValue, weatherCondition, fromDatetime, toDatetime);
         return weatherTrendService.getWeatherTrend(weatherTrendDto);
     }
 }

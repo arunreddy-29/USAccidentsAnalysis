@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Data
 @AllArgsConstructor
@@ -14,6 +15,6 @@ public class AgeGroupTrendDto {
     private int fromAge;
     private int toAge;
     private int timeOfDay;
-    private String fromDate;
-    private String toDate;
+    private LocalDateTime fromDate;
+    private LocalDateTime toDate;
 }

@@ -6,6 +6,7 @@ import com.dbms.usaccidents.usaccidentsanalysis.service.USAccidentService;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
@@ -25,19 +26,20 @@ public class USAccidentController {
     }
 
     @GetMapping("/ageGroupTrend")
-    public List<AccidentResultDto> getAgeGroupTrend(
+    public AccidentResultDto getAgeGroupTrend(
             @RequestParam("fromAge") int fromAge,
             @RequestParam("toAge") int toAge,
             @RequestParam("timeOfDay") String timeOfDay,
             @RequestParam("fromDate") LocalDate fromDate,
             @RequestParam("toDate") LocalDate toDate) {
 
-        String fDate = fromDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-        String tDate = toDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        LocalDateTime fromDatetime = LocalDateTime.parse(fromDate + " 00:00:00", formatter);
+        LocalDateTime toDatetime = LocalDateTime.parse(toDate + " 23:59:59", formatter);
 
         int time = Integer.parseInt(timeOfDay.split(":")[0]);
 
-        AgeGroupTrendDto ageGroupTrendDto = new AgeGroupTrendDto(fromAge, toAge, time, fDate, tDate);
+        AgeGroupTrendDto ageGroupTrendDto = new AgeGroupTrendDto(fromAge, toAge, time, fromDatetime, toDatetime);
         return usAccidentService.getAgeGroupTrend(ageGroupTrendDto);
     }
 
@@ -52,16 +54,17 @@ public class USAccidentController {
     }
 
     @GetMapping("/carTypeTrend")
-    public List<AccidentResultDto> getCarTypeTrend(
+    public AccidentResultDto getCarTypeTrend(
             @RequestParam("carMake") String carMake,
             @RequestParam("carModel") String carModel,
             @RequestParam("fromDate") LocalDate fromDate,
             @RequestParam("toDate") LocalDate toDate) {
 
-        String fDate = fromDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-        String tDate = toDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        LocalDateTime fromDatetime = LocalDateTime.parse(fromDate + " 00:00:00", formatter);
+        LocalDateTime toDatetime = LocalDateTime.parse(toDate + " 23:59:59", formatter);
 
-        CarTypeTrendDto carTypeTrendDto = new CarTypeTrendDto(carMake, carModel, fDate, tDate);
+        CarTypeTrendDto carTypeTrendDto = new CarTypeTrendDto(carMake, carModel, fromDatetime, toDatetime);
         return usAccidentService.getCarTypeTrend(carTypeTrendDto);
     }
 
@@ -73,15 +76,16 @@ public class USAccidentController {
 
 
     @GetMapping("/marylandViolationTrend")
-    public List<MarylandViolationResultDto> getMarylandViolationTrend(
+    public MarylandViolationResultDto getMarylandViolationTrend(
             @RequestParam String violation,
             @RequestParam LocalDate fromDate,
             @RequestParam LocalDate toDate) {
 
-        String fDate = fromDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-        String tDate = toDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        LocalDateTime fromDatetime = LocalDateTime.parse(fromDate + " 00:00:00", formatter);
+        LocalDateTime toDatetime = LocalDateTime.parse(toDate + " 23:59:59", formatter);
 
-        MarylandViolationTrendDto marylandViolationTrendDto = new MarylandViolationTrendDto(violation, fDate, tDate);
+        MarylandViolationTrendDto marylandViolationTrendDto = new MarylandViolationTrendDto(violation, fromDatetime, toDatetime);
         return usAccidentService.getMarylandViolationTrend(marylandViolationTrendDto);
     }
 
@@ -90,10 +94,11 @@ public class USAccidentController {
             @RequestParam LocalDate fromDate,
             @RequestParam LocalDate toDate) {
 
-        String fDate = fromDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-        String tDate = toDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        LocalDateTime fromDatetime = LocalDateTime.parse(fromDate + " 00:00:00", formatter);
+        LocalDateTime toDatetime = LocalDateTime.parse(toDate + " 23:59:59", formatter);
 
-        CovidTrendDto covidTrendDto = new CovidTrendDto(fDate, tDate);
+        CovidTrendDto covidTrendDto = new CovidTrendDto(fromDatetime, toDatetime);
         return usAccidentService.getCovidTrend(covidTrendDto);
     }
 }

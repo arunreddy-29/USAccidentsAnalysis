@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Data
 @AllArgsConstructor
@@ -12,6 +13,6 @@ import java.time.LocalDate;
 public class MarylandViolationTrendDto {
 
     private String violation;
-    private String fromDate;
-    private String toDate;
+    private LocalDateTime fromDate;
+    private LocalDateTime toDate;
 }

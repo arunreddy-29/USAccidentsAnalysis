@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "traffic_violation")
+@Table(name = "traffic_violations")
 public class TrafficViolationEntity {
 
     @Id
@@ -21,10 +21,10 @@ public class TrafficViolationEntity {
     private Integer day;
     private String time;
     private String accident;
-    private String overSpeeding;
-    private String signalJump;
+    private String overspeeding;
+    private String signaljump;
     private String alcohol;
-    private String violationType;
-    private String driverState;
+    private String violationtype;
+    private String driverstate;
 
 }

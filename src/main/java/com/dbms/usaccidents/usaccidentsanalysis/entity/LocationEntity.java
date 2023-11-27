@@ -17,5 +17,5 @@ public class LocationEntity {
     private String street;
     private String county;
     private String state;
-    private String zipCode;
+    private String zipcode;
 }

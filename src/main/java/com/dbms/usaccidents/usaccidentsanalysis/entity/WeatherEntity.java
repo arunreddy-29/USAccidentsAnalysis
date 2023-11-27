@@ -13,12 +13,12 @@ public class WeatherEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Double temperature;
-    private Double humidity;
-    private Double pressure;
-    private String windDirection;
-    private Double windSpeed;
-    private String weatherCondition;
-    private Double visibility;
+    private Float temperature;
+    private Float humidity;
+    private Float pressure;
+    private String winddirection;
+    private Float windspeed;
+    private String weathercondition;
+    private Float visibility;
 
 }

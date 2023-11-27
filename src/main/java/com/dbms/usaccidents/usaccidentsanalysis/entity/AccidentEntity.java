@@ -3,6 +3,7 @@ package com.dbms.usaccidents.usaccidentsanalysis.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 
 @Entity
@@ -16,16 +17,16 @@ public class AccidentEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String description;
-    private Boolean noExit;
+    private Boolean noexit;
     private Boolean railway;
     private Boolean junction;
     private Boolean crossing;
     private Boolean bump;
     private Boolean stop;
-    private Boolean trafficSignal;
+    private Boolean trafficsignal;
     private Boolean roundabout;
-    private Boolean turningLoop;
-    private ZonedDateTime timestamp;
+    private Boolean turningloop;
+    private LocalDateTime timestamp;
     private Integer month;
     private Integer year;
 

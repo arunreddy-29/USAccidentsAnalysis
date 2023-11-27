@@ -10,7 +10,6 @@ import java.util.List;
 @Service
 public class USAccidentService {
 
-    private final DriverAccidentRepository driverAccidentRepository;
     private final TrafficViolationRepository trafficViolationRepository;
 
     private final AccidentRepository accidentRepository;
@@ -24,8 +23,7 @@ public class USAccidentService {
     private final DriverRepository driverRepository;
 
 
-    public USAccidentService(TrafficViolationRepository trafficViolationRepository, AccidentRepository accidentRepository, LocationRepository locationRepository, VehicleRepository vehicleRepository, WeatherRepository weatherRepository, DriverRepository driverRepository, DriverAccidentRepository driverAccidentRepository) {
-        this.driverAccidentRepository = driverAccidentRepository;
+    public USAccidentService(TrafficViolationRepository trafficViolationRepository, AccidentRepository accidentRepository, LocationRepository locationRepository, VehicleRepository vehicleRepository, WeatherRepository weatherRepository, DriverRepository driverRepository) {
         this.trafficViolationRepository = trafficViolationRepository;
         this.accidentRepository = accidentRepository;
         this.locationRepository = locationRepository;
@@ -35,12 +33,12 @@ public class USAccidentService {
     }
 
     public Long getTotalRows() {
-        return driverAccidentRepository.count() + trafficViolationRepository.count() + accidentRepository.count() + locationRepository.count() + vehicleRepository.count() + weatherRepository.count() + driverRepository.count();
+        return trafficViolationRepository.count() + accidentRepository.count() + locationRepository.count() + vehicleRepository.count() + weatherRepository.count() + driverRepository.count();
     }
 
     public List<AccidentResultDto> getAgeGroupTrend(AgeGroupTrendDto ageGroupTrendDto) {
 
-        return driverAccidentRepository.countAccidentsByAgeAndSpecificHour(
+        return accidentRepository.countAccidentsByAgeAndTimePeriod(
                 ageGroupTrendDto.getFromAge(),
                 ageGroupTrendDto.getToAge(),
                 ageGroupTrendDto.getTimeOfDay(),
@@ -57,7 +55,7 @@ public class USAccidentService {
     }
 
     public List<AccidentResultDto> getCarTypeTrend(CarTypeTrendDto carTypeTrendDto) {
-        return driverAccidentRepository.countAccidentsByMakeModelAndMonthYear(
+        return accidentRepository.findAccidentCountsByManufacturerAndModelAndYear(
                 carTypeTrendDto.getCarMake(),
                 carTypeTrendDto.getCarModel(),
                 carTypeTrendDto.getFromDate(),

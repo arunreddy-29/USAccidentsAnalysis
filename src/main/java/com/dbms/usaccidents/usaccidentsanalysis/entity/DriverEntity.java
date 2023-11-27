@@ -14,8 +14,8 @@ import java.util.Set;
 public class DriverEntity {
 
     @Id
-    @Column(name = "driverLicense")
-    private String driverLicense;
+    @Column(name = "driverlicense")
+    private String driverlicense;
     private String name;
     private Integer age;
 

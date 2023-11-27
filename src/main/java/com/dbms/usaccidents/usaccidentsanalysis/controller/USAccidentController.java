@@ -3,10 +3,10 @@ package com.dbms.usaccidents.usaccidentsanalysis.controller;
 
 import com.dbms.usaccidents.usaccidentsanalysis.schema.*;
 import com.dbms.usaccidents.usaccidentsanalysis.service.USAccidentService;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @RestController
@@ -28,11 +28,16 @@ public class USAccidentController {
     public List<AccidentResultDto> getAgeGroupTrend(
             @RequestParam("fromAge") int fromAge,
             @RequestParam("toAge") int toAge,
-            @RequestParam("timeOfDay") int timeOfDay,
-            @RequestParam("fromDate") String fromDate,
-            @RequestParam("toDate") String toDate) {
+            @RequestParam("timeOfDay") String timeOfDay,
+            @RequestParam("fromDate") LocalDate fromDate,
+            @RequestParam("toDate") LocalDate toDate) {
 
-        AgeGroupTrendDto ageGroupTrendDto = new AgeGroupTrendDto(fromAge, toAge, timeOfDay, fromDate, toDate);
+        String fDate = fromDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        String tDate = toDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+
+        int time = Integer.parseInt(timeOfDay.split(":")[0]);
+
+        AgeGroupTrendDto ageGroupTrendDto = new AgeGroupTrendDto(fromAge, toAge, time, fDate, tDate);
         return usAccidentService.getAgeGroupTrend(ageGroupTrendDto);
     }
 
@@ -50,12 +55,16 @@ public class USAccidentController {
     public List<AccidentResultDto> getCarTypeTrend(
             @RequestParam("carMake") String carMake,
             @RequestParam("carModel") String carModel,
-            @RequestParam("fromDate") String fromDate,
-            @RequestParam("toDate") String toDate) {
+            @RequestParam("fromDate") LocalDate fromDate,
+            @RequestParam("toDate") LocalDate toDate) {
 
-        CarTypeTrendDto carTypeTrendDto = new CarTypeTrendDto(carMake, carModel, fromDate, toDate);
+        String fDate = fromDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        String tDate = toDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+
+        CarTypeTrendDto carTypeTrendDto = new CarTypeTrendDto(carMake, carModel, fDate, tDate);
         return usAccidentService.getCarTypeTrend(carTypeTrendDto);
     }
+
 
     @GetMapping("/marylandViolationTrend/violations")
     public List<String> getMarylandViolations() {
@@ -66,19 +75,25 @@ public class USAccidentController {
     @GetMapping("/marylandViolationTrend")
     public List<MarylandViolationResultDto> getMarylandViolationTrend(
             @RequestParam String violation,
-            @RequestParam String fromDate,
-            @RequestParam String toDate) {
+            @RequestParam LocalDate fromDate,
+            @RequestParam LocalDate toDate) {
 
-        MarylandViolationTrendDto marylandViolationTrendDto = new MarylandViolationTrendDto(violation, fromDate, toDate);
+        String fDate = fromDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        String tDate = toDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+
+        MarylandViolationTrendDto marylandViolationTrendDto = new MarylandViolationTrendDto(violation, fDate, tDate);
         return usAccidentService.getMarylandViolationTrend(marylandViolationTrendDto);
     }
 
     @GetMapping("/covidTrend")
     public List<CovidTrendResultDto> getCovidTrend(
-            @RequestParam String fromDate,
-            @RequestParam String toDate) {
+            @RequestParam LocalDate fromDate,
+            @RequestParam LocalDate toDate) {
 
-        CovidTrendDto covidTrendDto = new CovidTrendDto(fromDate, toDate);
+        String fDate = fromDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        String tDate = toDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+
+        CovidTrendDto covidTrendDto = new CovidTrendDto(fDate, tDate);
         return usAccidentService.getCovidTrend(covidTrendDto);
     }
 }

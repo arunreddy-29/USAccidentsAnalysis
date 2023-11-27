@@ -14,6 +14,6 @@ public interface LocationRepository extends JpaRepository<LocationEntity, Long> 
     @Query("SELECT DISTINCT a.city FROM LocationEntity a")
     List<String> findDistinctCities();
 
-    @Query("SELECT DISTINCT a.zipCode FROM LocationEntity a")
+    @Query("SELECT DISTINCT a.zipcode FROM LocationEntity a")
     List<String> findDistinctZipCodes();
 }

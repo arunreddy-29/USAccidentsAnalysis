@@ -8,6 +8,6 @@ import java.util.List;
 
 public interface TrafficViolationRepository extends JpaRepository<TrafficViolationEntity, Long> {
 
-    @Query("SELECT DISTINCT a.violationType FROM  TrafficViolationEntity a")
+    @Query("SELECT DISTINCT a.violationtype FROM  TrafficViolationEntity a")
     List<String> findDistinctViolationType();
 }

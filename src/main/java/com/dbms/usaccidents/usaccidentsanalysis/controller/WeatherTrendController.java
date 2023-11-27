@@ -4,10 +4,10 @@ import com.dbms.usaccidents.usaccidentsanalysis.schema.AccidentResultDto;
 import com.dbms.usaccidents.usaccidentsanalysis.schema.LocationType;
 import com.dbms.usaccidents.usaccidentsanalysis.schema.WeatherTrendDto;
 import com.dbms.usaccidents.usaccidentsanalysis.service.WeatherTrendService;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -45,9 +45,11 @@ public class WeatherTrendController {
             @RequestParam("location") LocationType location,
             @RequestParam("locationValue") String locationValue,
             @RequestParam("weatherCondition") String weatherCondition,
-            @RequestParam("fromDate") String fromDate,
-            @RequestParam("toDate") String toDate) {
-        WeatherTrendDto weatherTrendDto = new WeatherTrendDto(location, locationValue, weatherCondition, fromDate, toDate);
+            @RequestParam("fromDate") LocalDate fromDate,
+            @RequestParam("toDate") LocalDate toDate) {
+        String fDate = fromDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        String tDate = toDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        WeatherTrendDto weatherTrendDto = new WeatherTrendDto(location, locationValue, weatherCondition, fDate, tDate);
         return weatherTrendService.getWeatherTrend(weatherTrendDto);
     }
 }

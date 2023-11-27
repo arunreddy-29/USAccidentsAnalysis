@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface WeatherRepository extends JpaRepository<WeatherEntity, Long> {
 
-    @Query("SELECT DISTINCT a.weatherCondition FROM WeatherEntity a")
+    @Query("SELECT DISTINCT a.weathercondition FROM WeatherEntity a")
     List<String> findDistinctWeatherCondition();
 
 }

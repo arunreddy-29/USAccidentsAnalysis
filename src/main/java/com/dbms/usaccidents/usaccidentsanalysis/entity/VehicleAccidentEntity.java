@@ -9,26 +9,26 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "VehicleAccident")
+@Table(name = "vehicleaccident")
 @IdClass(VehicleAccidentId.class)
 public class VehicleAccidentEntity {
 
     @Id
-    @Column(name = "VehicleID")
+    @Column(name = "vehicleid")
     private Long vehicleId;
 
     @Id
-    @Column(name = "AccidentID")
+    @Column(name = "accidentid")
     private Long accidentId;
 
     @ManyToOne
     @MapsId("vehicleId")
-    @JoinColumn(name = "VehicleID")
+    @JoinColumn(name = "vehicleid")
     private VehicleEntity vehicle;
 
     @ManyToOne
     @MapsId("accidentId")
-    @JoinColumn(name = "AccidentID")
+    @JoinColumn(name = "accidentid")
     private AccidentEntity accident;
 
 }

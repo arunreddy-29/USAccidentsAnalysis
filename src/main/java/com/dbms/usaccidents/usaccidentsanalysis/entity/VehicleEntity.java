@@ -12,11 +12,11 @@ public class VehicleEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Integer id;//string
     private String model;
     private String manufacturer;
 
     @ManyToOne
-    @JoinColumn(name = "DriverLicense")
+    @JoinColumn(name = "driverlicense")
     private DriverEntity driver;
 }

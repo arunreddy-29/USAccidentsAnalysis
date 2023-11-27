@@ -14,9 +14,9 @@ public class UserEntity {
 
     @Id
     private Long id;
-    private String loginId;
-    private String firstName;
-    private String lastName;
+    private String loginid;
+    private String firstname;
+    private String lastname;
     private String password;
 
 }

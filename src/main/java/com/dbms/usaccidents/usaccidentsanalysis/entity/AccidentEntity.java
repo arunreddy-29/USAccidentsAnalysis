@@ -14,7 +14,7 @@ import java.time.ZonedDateTime;
 public class AccidentEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String description;
     private Boolean noexit;

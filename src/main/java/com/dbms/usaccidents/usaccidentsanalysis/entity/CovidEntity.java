@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 public class CovidEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String state;

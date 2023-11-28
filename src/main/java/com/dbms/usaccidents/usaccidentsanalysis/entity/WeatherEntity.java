@@ -11,7 +11,7 @@ import lombok.*;
 public class WeatherEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private Float temperature;
     private Float humidity;

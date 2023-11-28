@@ -11,7 +11,7 @@ import lombok.*;
 public class VehicleEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private String model;
     private String manufacturer;
